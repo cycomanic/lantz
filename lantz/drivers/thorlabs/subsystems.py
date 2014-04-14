@@ -14,12 +14,14 @@ measure_types = ['power', 'current', 'voltage', 'energy',
             'frequency', 'pdensity', 'edensity', 'resistence'
             'temperature']
 
-class SubDriver(Driver):
-    def __init__(self, parent):
-        self.parent = parent
+class SubDriver(object):
+    def __getattr__(self, name):
+        if name[0] = '_':
+            return self.parent.name
+
 
 class System(SubDriver):
-    """System subsystem commands"""
+    """System subsystem commands for Thorlabs PM100 optical power meter"""
 
     @Feat()
     def error(self):
@@ -71,12 +73,18 @@ class System(SubDriver):
                     }
         return retdict
 
-class Status(SubDriver):
-    """Status subsystem commands"""
+class Sense(SubDriver):
 
+    @Feat(limits=(9999999999,))
+    def average(self):
+        return int(self.parent.query("SENSe:AVERage:COUNt?"))
+
+    @average.setter
+    def setaverage(self, value):
+        self.parent.send("SENSe:AVERage:COUNt {:d}".format(int(value)))
 
 class Measurement(SubDriver):
-    """Measurement subsystem commands"""
+    """Measurement subsystem commands for Thorlabs PM100 optical power meter"""
 
     @Action()
     def initiate(self):
@@ -92,6 +100,7 @@ class Measurement(SubDriver):
             #raise ValueError()
         #self.parent.send('CONFigure:{:s}'.format(value))
 
+    @Feat()
+    def fetch(self):
 
 
- 
