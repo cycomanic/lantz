@@ -1,13 +1,15 @@
 from lantz import Feat
 from lantz.drivers.usbtmc import USBTMCDriver
+from lantz.drivers.ieee4882 import IEEE4882Driver
 
-class PM320E(USBTMCDriver):
+class PM320E(USBTMCDriver,IEEE4882Driver):
     """Thorlabs dual port  power meter"""
     name = "PM320E"
     idVendor = 0x1313
     idProduct = 0x8072
+
     def __init__(self, serial_number=None, **kwargs):
-        super().__init__(idVendor, idProduct, serial_number, **kwargs)
+        super().__init__(self.idVendor, self.idProduct, serial_number, **kwargs)
 
     def GetError(self):
         return int(self.instrument.ask(':STAT:ERR:CND?'))
