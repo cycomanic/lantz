@@ -14,10 +14,9 @@ measure_types = ['power', 'current', 'voltage', 'energy',
             'frequency', 'pdensity', 'edensity', 'resistence'
             'temperature']
 
-class SubDriver(object):
-    def __getattr__(self, name):
-        if name[0] = '_':
-            return self.parent.name
+class SubDriver(Driver):
+    def __init__(self, parent):
+        self.parent = parent
 
 
 class System(SubDriver):
@@ -33,7 +32,7 @@ class System(SubDriver):
         """Query level of SCPI standard (1999.0)"""
         return self.parent.query("SYSTem:VERSion?")
 
-    @Feat(values=set((50, 60)))#, units='Hz')
+    @Feat(values=set((50, 60)), units='Hz')
     def lfrequency(self):
         """The instrument's line frequency can be 50 or 60 Hz"""
         return int(self.parent.query("SYSTem:LFRequency?"))
@@ -102,5 +101,4 @@ class Measurement(SubDriver):
 
     @Feat()
     def fetch(self):
-
-
+        pass
