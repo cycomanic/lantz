@@ -169,11 +169,12 @@ if __name__ == '__main__':
     import argparse
     import lantz.log
     import visa
+    import lantz.messagebased
 
-    _resource_manager = visa.ResourceManager('yenista.yaml@sim')
+    lantz.messagebased._resource_manager = visa.ResourceManager('yenista.yaml@sim')
 
 
-    parser = argparse.ArgumentParser(description='Test Kentech HRI')
+    parser = argparse.ArgumentParser(description='Test Tunics ECL')
     parser.add_argument('-i', '--interactive', action='store_true',
                         default=False, help='Show interactive GUI')
     parser.add_argument('-p', '--port', type=str, default='1',
@@ -181,7 +182,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     lantz.log.log_to_socket(lantz.log.DEBUG)
-    with T100SHP.from_serial_port(args.port) as inst:
+    with T100SHP.via_serial(args.port) as inst:
+    #with T100SHP("ASLR1::INSTR") as inst:
         if args.interactive:
             from lantz.ui.app import start_test_app
             start_test_app(inst)
