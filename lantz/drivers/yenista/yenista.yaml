@@ -1,21 +1,21 @@
 spec: "1.0"
 devices:
-  device T100SHP:
+  T100SHP:
     eom:
-      ASLR INSTR:
+      ASRL INSTR:
         q: "\r"
         r: "\r>"
       GPIB INSTR:
         q: "\n"
         r: "\n"
     error: 
-    status_register:
-      - q: "*STB?"
-        mav_error:  16
-        lim_error:  8
-        errv_error:   4
-        errc_error:   2
-        opc:      1
+      status_register:
+        - q: "*STB?"
+          mav_error:  16
+          lim_error:  8
+          errv_error:   4
+          errc_error:   2
+          opc:      1
     dialogues:
       - q: "*IDN?"
         r: "YenistaOptics,T100S-HP,0,pyvisa-sim simulator"
@@ -82,7 +82,7 @@ devices:
           min: 0
           max: 400
           type: float 
-       limit:
+      currentlimit:
         default: "No"
         getter:
           q: "LIMIT?"
@@ -125,22 +125,23 @@ devices:
         specs:
           valid: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 20, 22, 25, 29, 33, 40, 50, 67, 100]
           type: int
-      finectrl_wl:
-        setter:
-          q: "FSCL={:.1f}"
-          r: OK
-        specs:
-          max: 99.9
-          min: 0
-          type: float
-      finectrl_f:
-        setter:
-          q: "FSCF={:.2f}"
-          r: OK
-        specs:
-          max: 9.99
-          min: 0
-          type: float
+      # can not do setter only
+      #finectrl_wl:
+      #  setter:
+      #    q: "FSCL={:.1f}"
+      #    r: OK
+      #  specs:
+      #    max: 99.9
+      #    min: 0
+      #    type: float
+      #finectrl_f:
+      #  setter:
+      #    q: "FSCF={:.2f}"
+      #    r: OK
+      #  specs:
+      #    max: 9.99
+      #    min: 0
+      #    type: float
       backlash_suppression:
         default: 1
         setter:
@@ -178,4 +179,4 @@ devices:
           type: float
 resources:
   ASRL1::INSTR:
-  device: T100SHP
+    device: T100SHP
