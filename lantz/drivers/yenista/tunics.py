@@ -19,7 +19,7 @@ from lantz.messagebased import MessageBasedDriver
 class  T100SHP(MessageBasedDriver):
     """Tunics T100S-HP High Power Tunable Laser
     """
-:
+
     DEFAULTS = {'ASRL': {'write_termination': '\r',
                          'baud_rate': 9600,
                          'data_bits': 8,
@@ -57,7 +57,7 @@ class  T100SHP(MessageBasedDriver):
         """
         return float(self.query("PCAL1?"))
 
-    @pcal1.setter()
+    @pcal1.setter
     def pcal1(self, value):
         self.query("PCAL1={:.2f}".format(value))
 
@@ -67,7 +67,7 @@ class  T100SHP(MessageBasedDriver):
         """
         return float(self.query("PCAL2?"))
 
-    @pcal2.setter()
+    @pcal2.setter
     def pcal2(self, value):
         self.query("PCAL2={:.2f}".format(value))
 
@@ -75,7 +75,7 @@ class  T100SHP(MessageBasedDriver):
     def output(self, value):
         self.query(value)
 
-    @Action(values=("dBm", "mW"))
+    @Action(values={"dBm": "dBm", "mW": "mW"})
     def set_unit(self, value):
         self.query(value.upper())
 
@@ -88,7 +88,7 @@ class  T100SHP(MessageBasedDriver):
     def power(self, value):
         self.query("P={:.2f}".format(value))
 
-    @Feat(unit="mA", limit=(0, 400))
+    @Feat(units="mA", limits=(0, 400))
     def current(self):
         return float(self.query("I?"))
 
@@ -98,7 +98,7 @@ class  T100SHP(MessageBasedDriver):
 
     # control the wavelength or frequency
 
-    @Feat(unit="nm")
+    @Feat(units="nm")
     def wavelength(self):
         return float(self.query("L?"))
 
@@ -106,15 +106,15 @@ class  T100SHP(MessageBasedDriver):
     def wavelength(self, value):
         self.query("L={:.3f}".format(value))
 
-    @Feat(unit="nm")
+    @Feat(units="nm")
     def wavelength_max(self):
         return float(self.query("L? MAX"))
 
-    @Feat(unit="nm")
+    @Feat(units="nm")
     def wavelength_min(self):
         return float(self.query("L? MIN"))
 
-    @Feat(unit="GHz")
+    @Feat(units="GHz")
     def frequency(self):
         return float(self.query("F?"))
 
@@ -122,15 +122,15 @@ class  T100SHP(MessageBasedDriver):
     def frequency(self, value):
         self.query("F={:.1f}".format(value))
 
-    @Feat(unit="GHz")
+    @Feat(units="GHz")
     def frequency_max(self):
         return float(self.query("F? MAX"))
 
-    @Feat(unit="GHz")
+    @Feat(units="GHz")
     def frequency_min(self):
         return float(self.query("F? MIN"))
 
-    @Feat(unit="nm/s")
+    @Feat(units="nm/s")
     def motorspeed(self):
         return float(self.query("MOTOR_SPEED?"))
 
@@ -138,11 +138,11 @@ class  T100SHP(MessageBasedDriver):
     def motorspeed(self, value):
         self.query("MOTOR_SPEED={:03d}".format(value))
 
-    @Feat(unit="pm", limits=(0,99.9, 0.1))
+    @Feat(units="pm", limits=(0,99.9, 0.1))
     def finescan_wavelength(self, value):
         self.query("FSCL={:.1f%}".format(value))
 
-    @Feat(unit="GHz", limits=(0,9.99, 0.01))
+    @Feat(units="GHz", limits=(0,9.99, 0.01))
     def finescan_frequency(self, value):
         self.query("FSCF={:.1f%}".format(value))
 
@@ -165,4 +165,36 @@ class  T100SHP(MessageBasedDriver):
             self.activecavitycontrol = False
 
 
+if __name__ == '__main__':
+    import argparse
+    import lantz.log
+    import visa
 
+    _resource_manager = visa.ResourceManager('yenista.yaml@sim')
+
+
+    parser = argparse.ArgumentParser(description='Test Kentech HRI')
+    parser.add_argument('-i', '--interactive', action='store_true',
+                        default=False, help='Show interactive GUI')
+    parser.add_argument('-p', '--port', type=str, default='1',
+                        help='Serial port to connect to')
+
+    args = parser.parse_args()
+    lantz.log.log_to_socket(lantz.log.DEBUG)
+    with T100SHP.from_serial_port(args.port) as inst:
+        if args.interactive:
+            from lantz.ui.app import start_test_app
+            start_test_app(inst)
+        else:
+            from time import sleep
+            print("init")
+            #freq = 130
+            #inst.power(4,10)
+            #sleep(0.2)
+            #inst.enabled(4,1)
+            #sleep(1.2)
+            #inst.enabled(4,0)
+            #sleep(1.2)
+            #inst.enabled(4,1)
+
+ 
