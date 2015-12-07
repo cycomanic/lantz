@@ -1,181 +1,181 @@
 spec: "1.0"
 devices:
-    device T100SHP:
-        eom:
-            ASLR INSTR:
-                q: "\r"
-                r: "\r>"
-            GPIB INSTR:
-                q: "\n"
-                r: "\n"
-        error: 
-        status_register:
-            - q: "*STB?"
-              mav_error:    16
-              lim_error:    8
-              errv_error:   4
-              errc_error:   2
-              opc:          1
-        dialogues:
-          - q: "*IDN?"
-            r: "YenistaOptics,T100S-HP,0,pyvisa-sim simulator"
-          - q: "AUTO_CAL"
-            r: OK
-          - q: "DISABLE"
-            r: OK
-          - q: "ENABLE"
-            r: OK
-          - q: "DBM"
-            r: OK
-          - q: "mW"
-            r: OK
-          - q: "APCON"
-            r: OK
-          - q: "APCOFF"
-            r: OK
-          - q: "ACTCTRLON"
-            r: OK
-          - q: "ACTCTRLOFF"
-            r: OK
-          - q: "CTRLON"
-            r: OK
-          - q: "CTRLOFF"
-            r: OK
-          - q: "INIT"
-            r: OK
-          - q: "ECHON"
-            r: OK
-          - q: "ECHOFF"
-            r: OK
-          - q: "LOCAL"
-            r: OK
-          - q: "L? MIN"
-            r: 1480
-          - q: "L? MAX"
-            r: 1610
-          - q: "F? MIN"
-            r: 186206.5
-          - q: "F? MAX"
-            r: 202562.5
-        properties:
-            power:
-                default: 10.0
-                getter:
-                    q: "P?"
-                    r: "{:.2f}"
-                setter:
-                    q: "P={:.2f}"
-                    r: OK
-                specs:
-                    min: 0
-                    max: 100
-                    type: float
-            current:
-                default: 300.0
-                getter:
-                    q: "I?"
-                    r: "{:.1f}"
-                setter:
-                    q: "I={:.1f}"
-                    r: OK
-                specs:
-                    min: 0
-                    max: 400
-                    type: float 
-             limit:
-                default: "No"
-                getter:
-                    q: "LIMIT?"
-                    r: "{:s}"
-                specs:
-                    valid: ["Yes", "No"]
-                    type: str 
-            wavelength:
-                default: 1550
-                getter:
-                    q: "L?"
-                    r: "{:.3f}"
-                setter:
-                    q: "L={:.3f}"
-                    r: OK
-                specs:
-                    min: 1480
-                    max: 1610
-                    type: float
-            frequency:
-                default: 193000
-                getter:
-                    q: "F?"
-                    r: "{:.1f}"
-                setter:
-                    q: "F={:.1f}"
-                    r: OK
-                specs:
-                    min: 186206.5
-                    max: 202562.5
-                    type: float
-            motor_speed:
-                default: 50
-                getter:
-                    q: "MOTOR_SPEED?"
-                    r: "{:03d}"
-                setter:
-                    q: "MOTOR_SPEED={:03d}"
-                    r: OK
-                specs:
-                    valid: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 20, 22, 25, 29, 33, 40, 50, 67, 100]
-                    type: int
-            finectrl_wl:
-                setter:
-                    q: "FSCL={:.1f}"
-                    r: OK
-                specs:
-                    max: 99.9
-                    min: 0
-                    type: float
-            finectrl_f:
-                setter:
-                    q: "FSCF={:.2f}"
-                    r: OK
-                specs:
-                    max: 9.99
-                    min: 0
-                    type: float
-            backlash_suppression:
-                default: 1
-                setter:
-                    q: "B_SUPPR={:d}"
-                    r: OK
-                getter:
-                    q: "B_SUPPR?"
-                    r: "{:d}"
-                specs:
-                    valid: [0, 1]
-                    type: int
-            powercalibration1:
-                default: 0.4
-                setter:
-                    q: "PCAL1={:.2f}"
-                    r: OK
-                getter:
-                    q: "PCAL1?"
-                    r: "{:.2f}"
-                specs:
-                    max: 0.6
-                    min: 0.3
-                    type: float
-            powercalibration2:
-                default: 0.5
-                setter:
-                    q: "PCAL={:.2f}"
-                    r: OK
-                getter:
-                    q: "PCAL?"
-                    r: "{:.2f}"
-                specs:
-                    max: 0.6
-                    min: 0.3
-                    type: float
+  device T100SHP:
+    eom:
+      ASLR INSTR:
+        q: "\r"
+        r: "\r>"
+      GPIB INSTR:
+        q: "\n"
+        r: "\n"
+    error: 
+    status_register:
+      - q: "*STB?"
+        mav_error:  16
+        lim_error:  8
+        errv_error:   4
+        errc_error:   2
+        opc:      1
+    dialogues:
+      - q: "*IDN?"
+        r: "YenistaOptics,T100S-HP,0,pyvisa-sim simulator"
+      - q: "AUTO_CAL"
+        r: OK
+      - q: "DISABLE"
+        r: OK
+      - q: "ENABLE"
+        r: OK
+      - q: "DBM"
+        r: OK
+      - q: "mW"
+        r: OK
+      - q: "APCON"
+        r: OK
+      - q: "APCOFF"
+        r: OK
+      - q: "ACTCTRLON"
+        r: OK
+      - q: "ACTCTRLOFF"
+        r: OK
+      - q: "CTRLON"
+        r: OK
+      - q: "CTRLOFF"
+        r: OK
+      - q: "INIT"
+        r: OK
+      - q: "ECHON"
+        r: OK
+      - q: "ECHOFF"
+        r: OK
+      - q: "LOCAL"
+        r: OK
+      - q: "L? MIN"
+        r: 1480
+      - q: "L? MAX"
+        r: 1610
+      - q: "F? MIN"
+        r: 186206.5
+      - q: "F? MAX"
+        r: 202562.5
+    properties:
+      power:
+        default: 10.0
+        getter:
+          q: "P?"
+          r: "{:.2f}"
+        setter:
+          q: "P={:.2f}"
+          r: OK
+        specs:
+          min: 0
+          max: 100
+          type: float
+      current:
+        default: 300.0
+        getter:
+          q: "I?"
+          r: "{:.1f}"
+        setter:
+          q: "I={:.1f}"
+          r: OK
+        specs:
+          min: 0
+          max: 400
+          type: float 
+       limit:
+        default: "No"
+        getter:
+          q: "LIMIT?"
+          r: "{:s}"
+        specs:
+          valid: ["Yes", "No"]
+          type: str 
+      wavelength:
+        default: 1550
+        getter:
+          q: "L?"
+          r: "{:.3f}"
+        setter:
+          q: "L={:.3f}"
+          r: OK
+        specs:
+          min: 1480
+          max: 1610
+          type: float
+      frequency:
+        default: 193000
+        getter:
+          q: "F?"
+          r: "{:.1f}"
+        setter:
+          q: "F={:.1f}"
+          r: OK
+        specs:
+          min: 186206.5
+          max: 202562.5
+          type: float
+      motor_speed:
+        default: 50
+        getter:
+          q: "MOTOR_SPEED?"
+          r: "{:03d}"
+        setter:
+          q: "MOTOR_SPEED={:03d}"
+          r: OK
+        specs:
+          valid: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 20, 22, 25, 29, 33, 40, 50, 67, 100]
+          type: int
+      finectrl_wl:
+        setter:
+          q: "FSCL={:.1f}"
+          r: OK
+        specs:
+          max: 99.9
+          min: 0
+          type: float
+      finectrl_f:
+        setter:
+          q: "FSCF={:.2f}"
+          r: OK
+        specs:
+          max: 9.99
+          min: 0
+          type: float
+      backlash_suppression:
+        default: 1
+        setter:
+          q: "B_SUPPR={:d}"
+          r: OK
+        getter:
+          q: "B_SUPPR?"
+          r: "{:d}"
+        specs:
+          valid: [0, 1]
+          type: int
+      powercalibration1:
+        default: 0.4
+        setter:
+          q: "PCAL1={:.2f}"
+          r: OK
+        getter:
+          q: "PCAL1?"
+          r: "{:.2f}"
+        specs:
+          max: 0.6
+          min: 0.3
+          type: float
+      powercalibration2:
+        default: 0.5
+        setter:
+          q: "PCAL={:.2f}"
+          r: OK
+        getter:
+          q: "PCAL?"
+          r: "{:.2f}"
+        specs:
+          max: 0.6
+          min: 0.3
+          type: float
 resources:
   ASRL1::INSTR:
-    device: T100SHP
+  device: T100SHP
