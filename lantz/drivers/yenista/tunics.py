@@ -10,6 +10,7 @@
 
 """
 
+import numpy as np
 from pyvisa import constants
 from lantz import Feat, Action
 from lantz.errors import InstrumentError
@@ -26,7 +27,8 @@ class  T100SHP(MessageBasedDriver):
                          'parity': constants.Parity.none,
                          'stop_bits': constants.StopBits.one,
                          'encoding': 'ascii',
-                         'read_termination': '\r> '},
+                         'read_termination': '\r>'},
+                         #'read_termination': '\r> '},
                 'GPIB': {'write_termination': '\n'}
                 }
 
@@ -37,16 +39,19 @@ class  T100SHP(MessageBasedDriver):
     # General system control
     @Feat()
     def idn(self):
+        """Ask for Identification string of intstrument"""
         return self.query("*IDN?")
 
     @Action()
     def init(self):
+        """Initialise laser"""
         return self.query("INIT")
 
     # Calibration control
 
     @Action()
     def auto_cal(self):
+        """Perform autocalibration"""
         ret = self.query("AUTO_CAL")
         if ret.upper() == "REFERENCING ERROR":
             raise InstrumentError
@@ -59,99 +64,126 @@ class  T100SHP(MessageBasedDriver):
 
     @pcal1.setter
     def pcal1(self, value):
+        """The first power value (in mW) of the two-point power calibration method.
+        """
         self.query("PCAL1={:.2f}".format(value))
 
     @Feat(units='mW', limits=(0.3, 0.6))
     def pcal2(self):
-        """The first power value (in mW) of the two-point power calibration method.
+        """The second power value (in mW) of the two-point power calibration method.
         """
         return float(self.query("PCAL2?"))
 
     @pcal2.setter
     def pcal2(self, value):
+        """The second power value (in mW) of the two-point power calibration method.
+        """
         self.query("PCAL2={:.2f}".format(value))
 
     @Action(values={True: "ENABLE", False: "DISABLE"})
     def output(self, value):
+        """Turn the output on or off"""
         self.query(value)
 
     @Action(values={"dBm": "dBm", "mW": "mW"})
     def set_unit(self, value):
+        """Set the power units to either mW or dBm"""
         self.query(value.upper())
 
     #control the output power
-    @Feat()
+    @Feat(limits=(-50, 100))
     def power(self):
+        """Output power"""
         return float(self.query("P?"))
 
     @power.setter
     def power(self, value):
+        """Output power"""
         self.query("P={:.2f}".format(value))
 
     @Feat(units="mA", limits=(0, 400))
     def current(self):
+        """Pump Current"""
         return float(self.query("I?"))
 
     @current.setter
     def current(self, value):
+        """Pump Current"""
         self.query("I={:.1f}".format(value))
 
     # control the wavelength or frequency
 
     @Feat(units="nm")
     def wavelength(self):
+        """Laser wavelength"""
         return float(self.query("L?"))
 
     @wavelength.setter
     def wavelength(self, value):
+        """Laser wavelength"""
         self.query("L={:.3f}".format(value))
 
     @Feat(units="nm")
     def wavelength_max(self):
+        """Maximum wavelength wavelength of the laser"""
         return float(self.query("L? MAX"))
 
     @Feat(units="nm")
     def wavelength_min(self):
+        """Minimum wavelength of the laser"""
         return float(self.query("L? MIN"))
 
     @Feat(units="GHz")
     def frequency(self):
+        """Optical frequency of the laser"""
         return float(self.query("F?"))
 
     @frequency.setter
     def frequency(self, value):
+        """Optical frequency of the laser"""
         self.query("F={:.1f}".format(value))
 
     @Feat(units="GHz")
     def frequency_max(self):
+        """Maximum Optical frequency of the laser"""
         return float(self.query("F? MAX"))
 
     @Feat(units="GHz")
     def frequency_min(self):
+        """Mininum Optical frequency of the laser"""
         return float(self.query("F? MIN"))
 
-    @Feat(units="nm/s")
+    @Feat(units="nm/s", limits=(1,100,1))
     def motorspeed(self):
+        """Wavelength tuning speed"""
         return float(self.query("MOTOR_SPEED?"))
 
     @motorspeed.setter
     def motorspeed(self, value):
-        self.query("MOTOR_SPEED={:03d}".format(value))
+        """Wavelength tuning speed"""
+        values = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+            17, 18, 20, 22, 25, 29, 33, 40, 50, 67, 100], dtype=np.int)
+        value = values[abs(values-value).argmin()]
+        self.query("MOTOR_SPEED={:03d}".format(int(value)))
 
     @Feat(units="pm", limits=(0,99.9, 0.1))
     def finescan_wavelength(self, value):
+        """Perform a fine wavelength scan"""
         self.query("FSCL={:.1f%}".format(value))
 
     @Feat(units="GHz", limits=(0,9.99, 0.01))
     def finescan_frequency(self, value):
-        self.query("FSCF={:.1f%}".format(value))
+        """Perform a fine frequency scan"""
+        self.query("FSCF={:.2f%}".format(value))
 
     @Action(values={True: "CTRLON", False: "CTRLOFF"})
     def coherencecontrol(self, value):
+        """Coherence control"""
         self.query(value)
     
     @Action(values={True: "ACTCTRLON", False: "ACTCTRLOFF"})
     def activecavitycontrol(self, value):
+        """Stabilize the cavity"""
         self.query(value)
 
     def continuous_sweep(self, power, wl_start, wl_end, motor_speed, Nscans):
