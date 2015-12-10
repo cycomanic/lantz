@@ -4,7 +4,8 @@ devices:
     eom:
       ASRL INSTR:
         q: "\r"
-        r: "\r>"
+        r: '\r> '
+        #r: "\r> "
       GPIB INSTR:
         q: "\n"
         r: "\n"
@@ -179,4 +180,6 @@ devices:
           type: float
 resources:
   ASRL1::INSTR:
+    device: T100SHP
+  GPIB::8::INSTR:
     device: T100SHP
