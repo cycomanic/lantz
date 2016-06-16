@@ -31,8 +31,8 @@ class  T100SHP(MessageBasedDriver):
                          #'read_termination': '\r> '},
                 'GPIB': {'write_termination': '\n'}
                 }
-
-    def query(self,  command, *, send_args=(None, None), recv_args=(None, None)):
+    def query(self,  command, *, send_args=(None, None),
+              recv_args=(None, None) ):
         answer = super().query(command, send_args=send_args, recv_args=recv_args)
         return answer
 
@@ -180,7 +180,7 @@ class  T100SHP(MessageBasedDriver):
     def coherencecontrol(self, value):
         """Coherence control"""
         self.query(value)
-    
+
     @Action(values={True: "ACTCTRLON", False: "ACTCTRLOFF"})
     def activecavitycontrol(self, value):
         """Stabilize the cavity"""
@@ -231,4 +231,4 @@ if __name__ == '__main__':
             #sleep(1.2)
             #inst.enabled(4,1)
 
- 
+
